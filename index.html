@@ -204,7 +204,7 @@
             border-color: var(--tg-theme-button-color, #3390ec);
         }
         
-        .price-summary {
+        .price-info {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -214,13 +214,13 @@
             padding: 12px 16px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 100;
+            display: none;
         }
         
-        .price-info {
+        .price-info.visible {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
         }
         
         .price-label {
@@ -232,28 +232,6 @@
             font-size: 28px;
             font-weight: 700;
             color: var(--tg-theme-button-color, #3390ec);
-        }
-        
-        .order-button {
-            width: 100%;
-            background: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        
-        .order-button:active {
-            opacity: 0.8;
-        }
-        
-        .order-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
         }
         
         .loading {
@@ -339,236 +317,226 @@
             </div>
         </div>
 
-        <div class="price-summary" id="priceSummary" style="display: none;">
-            <div class="price-info">
-                <div>
-                    <div class="price-label">Итоговая стоимость:</div>
-                    <div class="price-value" id="totalPrice">0 ₽</div>
-                </div>
+        <!-- Только информация о цене, БЕЗ кнопки -->
+        <div class="price-info" id="priceInfo">
+            <div>
+                <div class="price-label">Итоговая стоимость:</div>
+                <div class="price-value" id="totalPrice">0 ₽</div>
             </div>
-            <button class="order-button" id="orderButton" disabled>Заказать бота</button>
         </div>
     </div>
 
     <script>
-    let tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-    tg.enableClosingConfirmation();
+        let tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        tg.enableClosingConfirmation();
 
-    const features = {
-        booking: [
-            { id: 'google_calendar', name: 'Интеграция с Google Calendar', desc: 'Синхронизация записей', price: 2500 },
-            { id: 'online_payment', name: 'Онлайн-оплата услуг', desc: 'ЮКасса/Robokassa', price: 3000 },
-            { id: 'loyalty', name: 'Программа лояльности', desc: 'Бонусы и скидки', price: 4000 },
-            { id: 'yclients', name: 'Интеграция с YCLIENTS', desc: 'Двусторонняя синхронизация', price: 12000 },
-            { id: 'crm', name: 'CRM-функции', desc: 'Заметки, теги, история', price: 5000 },
-            { id: 'web_admin', name: 'Веб-админка', desc: 'Панель с аналитикой', price: 8000 },
-        ],
-        delivery: [
-            { id: 'online_payment', name: 'Онлайн-оплата', desc: 'ЮКасса, Robokassa, СБП', price: 3000 },
-            { id: 'delivery_zones', name: 'Расчет доставки по зонам', desc: 'Автоматический подсчет', price: 2000 },
-            { id: 'promo', name: 'Система промокодов', desc: 'Скидки и акции', price: 2500 },
-            { id: 'loyalty', name: 'Программа лояльности', desc: 'Баллы и кэшбэк', price: 4000 },
-            { id: 'maps', name: 'Интеграция с картами', desc: 'Отслеживание курьера', price: 5000 },
-            { id: 'iiko', name: 'Интеграция с Iiko/Poster', desc: 'Синхронизация с системой', price: 15000 },
-            { id: 'web_admin', name: 'Веб-админка', desc: 'Статистика продаж', price: 8000 },
-        ],
-        courses: [
-            { id: 'online_payment', name: 'Онлайн-оплата', desc: 'Автовыдача доступа', price: 3000 },
-            { id: 'drip', name: 'Дрип-контент', desc: 'Поэтапная выдача уроков', price: 3500 },
-            { id: 'homework', name: 'Система ДЗ', desc: 'Прием и проверка заданий', price: 4000 },
-            { id: 'tests', name: 'Тесты и квизы', desc: 'Автопроверка знаний', price: 5000 },
-            { id: 'getcourse', name: 'Интеграция с GetCourse', desc: 'Синхронизация', price: 10000 },
-            { id: 'gamification', name: 'Геймификация', desc: 'Баллы, рейтинг', price: 6000 },
-            { id: 'community', name: 'Закрытое комьюнити', desc: 'Чат для учеников', price: 3000 },
-        ],
-        business: [
-            { id: 'distribution', name: 'Распределение заявок', desc: 'Между сотрудниками', price: 4000 },
-            { id: 'internal_chat', name: 'Внутренний чат', desc: 'Коммуникация команды', price: 3000 },
-            { id: 'google_sheets', name: 'Google Sheets', desc: 'Экспорт данных', price: 3500 },
-            { id: 'amocrm', name: 'AmoCRM/Bitrix24', desc: 'Интеграция с CRM', price: 12000 },
-            { id: '1c', name: 'Интеграция с 1С', desc: 'Обмен данными', price: 15000 },
-            { id: 'workflow', name: 'Автоматизация workflow', desc: 'Настраиваемые сценарии', price: 8000 },
-            { id: 'web_admin', name: 'Веб-админка', desc: 'Дашборды и отчеты', price: 10000 },
-        ]
-    };
-
-    const botTypeNames = {
-        booking: 'Бот для записи клиентов',
-        delivery: 'Бот для приема заказов',
-        courses: 'Бот для продажи курсов',
-        business: 'Бот для бизнес-автоматизации'
-    };
-
-    let selectedType = null;
-    let basePrice = 0;
-    let selectedFeatures = [];
-
-    setTimeout(() => {
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('mainContent').classList.remove('hidden');
-    }, 800);
-
-    document.querySelectorAll('.bot-type-card').forEach(card => {
-        card.addEventListener('click', function() {
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('medium');
-            }
-
-            document.querySelectorAll('.bot-type-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-
-            selectedType = this.dataset.type;
-            basePrice = parseInt(this.dataset.basePrice);
-            selectedFeatures = [];
-
-            document.getElementById('featuresSection').classList.add('visible');
-            document.getElementById('contactForm').classList.add('visible');
-            document.getElementById('priceSummary').style.display = 'block';
-
-            renderFeatures();
-            updatePrice();
-            updateMainButton(); // Обновляем кнопку
-
-            setTimeout(() => {
-                document.getElementById('featuresSection').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }, 100);
-        });
-    });
-
-    function renderFeatures() {
-        const container = document.getElementById('featuresList');
-        container.innerHTML = '';
-
-        const typeFeatures = features[selectedType];
-
-        typeFeatures.forEach(feature => {
-            const item = document.createElement('div');
-            item.className = 'feature-item';
-            item.innerHTML = `
-                <input type="checkbox" class="feature-checkbox" data-id="${feature.id}" data-price="${feature.price}">
-                <div class="feature-info">
-                    <div class="feature-name">${feature.name}</div>
-                    <div class="feature-description">${feature.desc}</div>
-                </div>
-                <div class="feature-price">+${feature.price.toLocaleString('ru-RU')} ₽</div>
-            `;
-
-            const checkbox = item.querySelector('.feature-checkbox');
-            
-            item.addEventListener('click', function(e) {
-                if (e.target !== checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                    updateSelectedFeatures();
-                    if (tg.HapticFeedback) {
-                        tg.HapticFeedback.impactOccurred('light');
-                    }
-                }
-            });
-
-            checkbox.addEventListener('change', updateSelectedFeatures);
-
-            container.appendChild(item);
-        });
-    }
-
-    function updateSelectedFeatures() {
-        selectedFeatures = [];
-        
-        document.querySelectorAll('.feature-checkbox:checked').forEach(cb => {
-            const id = cb.dataset.id;
-            const feature = features[selectedType].find(f => f.id === id);
-            selectedFeatures.push(feature);
-            cb.closest('.feature-item').classList.add('selected');
-        });
-
-        document.querySelectorAll('.feature-checkbox:not(:checked)').forEach(cb => {
-            cb.closest('.feature-item').classList.remove('selected');
-        });
-
-        updatePrice();
-    }
-
-    function updatePrice() {
-        const featuresTotal = selectedFeatures.reduce((sum, f) => sum + f.price, 0);
-        const total = basePrice + featuresTotal;
-
-        document.getElementById('totalPrice').textContent = total.toLocaleString('ru-RU') + ' ₽';
-        
-        // Обновляем текст MainButton
-        if (selectedType) {
-            tg.MainButton.setText(`Заказать за ${total.toLocaleString('ru-RU')} ₽`);
-        }
-
-        if (tg.HapticFeedback) {
-            tg.HapticFeedback.impactOccurred('light');
-        }
-    }
-
-    // Функция обновления MainButton
-    function updateMainButton() {
-        if (selectedType) {
-            tg.MainButton.show();
-            tg.MainButton.enable();
-        } else {
-            tg.MainButton.hide();
-        }
-    }
-
-    // Функция отправки заказа
-    function sendOrder() {
-        const name = document.getElementById('nameInput').value.trim();
-        const phone = document.getElementById('phoneInput').value.trim();
-        const comment = document.getElementById('commentInput').value.trim();
-
-        if (!selectedType) {
-            tg.showAlert('Выберите тип бота');
-            return;
-        }
-
-        if (!name || !phone) {
-            tg.showAlert('Пожалуйста, заполните имя и телефон');
-            return;
-        }
-
-        if (tg.HapticFeedback) {
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-
-        const orderData = {
-            bot_type: botTypeNames[selectedType],
-            base_price: basePrice,
-            features: selectedFeatures,
-            total_price: basePrice + selectedFeatures.reduce((sum, f) => sum + f.price, 0),
-            name: name,
-            phone: phone,
-            comment: comment
+        const features = {
+            booking: [
+                { id: 'google_calendar', name: 'Интеграция с Google Calendar', desc: 'Синхронизация записей', price: 2500 },
+                { id: 'online_payment', name: 'Онлайн-оплата услуг', desc: 'ЮКасса/Robokassa', price: 3000 },
+                { id: 'loyalty', name: 'Программа лояльности', desc: 'Бонусы и скидки', price: 4000 },
+                { id: 'yclients', name: 'Интеграция с YCLIENTS', desc: 'Двусторонняя синхронизация', price: 12000 },
+                { id: 'crm', name: 'CRM-функции', desc: 'Заметки, теги, история', price: 5000 },
+                { id: 'web_admin', name: 'Веб-админка', desc: 'Панель с аналитикой', price: 8000 },
+            ],
+            delivery: [
+                { id: 'online_payment', name: 'Онлайн-оплата', desc: 'ЮКасса, Robokassa, СБП', price: 3000 },
+                { id: 'delivery_zones', name: 'Расчет доставки по зонам', desc: 'Автоматический подсчет', price: 2000 },
+                { id: 'promo', name: 'Система промокодов', desc: 'Скидки и акции', price: 2500 },
+                { id: 'loyalty', name: 'Программа лояльности', desc: 'Баллы и кэшбэк', price: 4000 },
+                { id: 'maps', name: 'Интеграция с картами', desc: 'Отслеживание курьера', price: 5000 },
+                { id: 'iiko', name: 'Интеграция с Iiko/Poster', desc: 'Синхронизация с системой', price: 15000 },
+                { id: 'web_admin', name: 'Веб-админка', desc: 'Статистика продаж', price: 8000 },
+            ],
+            courses: [
+                { id: 'online_payment', name: 'Онлайн-оплата', desc: 'Автовыдача доступа', price: 3000 },
+                { id: 'drip', name: 'Дрип-контент', desc: 'Поэтапная выдача уроков', price: 3500 },
+                { id: 'homework', name: 'Система ДЗ', desc: 'Прием и проверка заданий', price: 4000 },
+                { id: 'tests', name: 'Тесты и квизы', desc: 'Автопроверка знаний', price: 5000 },
+                { id: 'getcourse', name: 'Интеграция с GetCourse', desc: 'Синхронизация', price: 10000 },
+                { id: 'gamification', name: 'Геймификация', desc: 'Баллы, рейтинг', price: 6000 },
+                { id: 'community', name: 'Закрытое комьюнити', desc: 'Чат для учеников', price: 3000 },
+            ],
+            business: [
+                { id: 'distribution', name: 'Распределение заявок', desc: 'Между сотрудниками', price: 4000 },
+                { id: 'internal_chat', name: 'Внутренний чат', desc: 'Коммуникация команды', price: 3000 },
+                { id: 'google_sheets', name: 'Google Sheets', desc: 'Экспорт данных', price: 3500 },
+                { id: 'amocrm', name: 'AmoCRM/Bitrix24', desc: 'Интеграция с CRM', price: 12000 },
+                { id: '1c', name: 'Интеграция с 1С', desc: 'Обмен данными', price: 15000 },
+                { id: 'workflow', name: 'Автоматизация workflow', desc: 'Настраиваемые сценарии', price: 8000 },
+                { id: 'web_admin', name: 'Веб-админка', desc: 'Дашборды и отчеты', price: 10000 },
+            ]
         };
 
-        console.log('Отправка данных:', orderData);
-        
-        try {
-            tg.sendData(JSON.stringify(orderData));
-            console.log('Данные отправлены успешно');
-        } catch (error) {
-            console.error('Ошибка отправки:', error);
-            tg.showAlert('Ошибка: ' + error.message);
+        const botTypeNames = {
+            booking: 'Бот для записи клиентов',
+            delivery: 'Бот для приема заказов',
+            courses: 'Бот для продажи курсов',
+            business: 'Бот для бизнес-автоматизации'
+        };
+
+        let selectedType = null;
+        let basePrice = 0;
+        let selectedFeatures = [];
+
+        setTimeout(() => {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+        }, 800);
+
+        document.querySelectorAll('.bot-type-card').forEach(card => {
+            card.addEventListener('click', function() {
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('medium');
+                }
+
+                document.querySelectorAll('.bot-type-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+
+                selectedType = this.dataset.type;
+                basePrice = parseInt(this.dataset.basePrice);
+                selectedFeatures = [];
+
+                document.getElementById('featuresSection').classList.add('visible');
+                document.getElementById('contactForm').classList.add('visible');
+                document.getElementById('priceInfo').classList.add('visible');
+
+                renderFeatures();
+                updatePrice();
+                updateMainButton();
+
+                setTimeout(() => {
+                    document.getElementById('featuresSection').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            });
+        });
+
+        function renderFeatures() {
+            const container = document.getElementById('featuresList');
+            container.innerHTML = '';
+
+            const typeFeatures = features[selectedType];
+
+            typeFeatures.forEach(feature => {
+                const item = document.createElement('div');
+                item.className = 'feature-item';
+                item.innerHTML = `
+                    <input type="checkbox" class="feature-checkbox" data-id="${feature.id}" data-price="${feature.price}">
+                    <div class="feature-info">
+                        <div class="feature-name">${feature.name}</div>
+                        <div class="feature-description">${feature.desc}</div>
+                    </div>
+                    <div class="feature-price">+${feature.price.toLocaleString('ru-RU')} ₽</div>
+                `;
+
+                const checkbox = item.querySelector('.feature-checkbox');
+                
+                item.addEventListener('click', function(e) {
+                    if (e.target !== checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        updateSelectedFeatures();
+                        if (tg.HapticFeedback) {
+                            tg.HapticFeedback.impactOccurred('light');
+                        }
+                    }
+                });
+
+                checkbox.addEventListener('change', updateSelectedFeatures);
+
+                container.appendChild(item);
+            });
         }
-    }
 
-    // Обработчик клика по MainButton
-    tg.MainButton.onClick(sendOrder);
+        function updateSelectedFeatures() {
+            selectedFeatures = [];
+            
+            document.querySelectorAll('.feature-checkbox:checked').forEach(cb => {
+                const id = cb.dataset.id;
+                const feature = features[selectedType].find(f => f.id === id);
+                selectedFeatures.push(feature);
+                cb.closest('.feature-item').classList.add('selected');
+            });
 
-    // Также оставляем обработчик на обычной кнопке для десктопа
-    document.getElementById('orderButton').addEventListener('click', sendOrder);
+            document.querySelectorAll('.feature-checkbox:not(:checked)').forEach(cb => {
+                cb.closest('.feature-item').classList.remove('selected');
+            });
 
-    // Инициализация MainButton
-    updateMainButton();
-</script>
+            updatePrice();
+        }
+
+        function updatePrice() {
+            const featuresTotal = selectedFeatures.reduce((sum, f) => sum + f.price, 0);
+            const total = basePrice + featuresTotal;
+
+            document.getElementById('totalPrice').textContent = total.toLocaleString('ru-RU') + ' ₽';
+            
+            // Обновляем текст MainButton
+            if (selectedType) {
+                tg.MainButton.setText(`Заказать за ${total.toLocaleString('ru-RU')} ₽`);
+            }
+
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        // Функция обновления MainButton
+        function updateMainButton() {
+            if (selectedType) {
+                tg.MainButton.show();
+                tg.MainButton.enable();
+            } else {
+                tg.MainButton.hide();
+            }
+        }
+
+        // Функция отправки заказа
+        function sendOrder() {
+            const name = document.getElementById('nameInput').value.trim();
+            const phone = document.getElementById('phoneInput').value.trim();
+            const comment = document.getElementById('commentInput').value.trim();
+
+            if (!selectedType) {
+                tg.showAlert('Выберите тип бота');
+                return;
+            }
+
+            if (!name || !phone) {
+                tg.showAlert('Пожалуйста, заполните имя и телефон');
+                return;
+            }
+
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.notificationOccurred('success');
+            }
+
+            const orderData = {
+                bot_type: botTypeNames[selectedType],
+                base_price: basePrice,
+                features: selectedFeatures,
+                total_price: basePrice + selectedFeatures.reduce((sum, f) => sum + f.price, 0),
+                name: name,
+                phone: phone,
+                comment: comment
+            };
+
+            console.log('Отправка данных:', orderData);
+            
+            tg.sendData(JSON.stringify(orderData));
+        }
+
+        // Обработчик клика по MainButton
+        tg.MainButton.onClick(sendOrder);
+
+        // Инициализация MainButton (скрыт по умолчанию)
+        tg.MainButton.hide();
+    </script>
 </body>
 </html>
+
 
