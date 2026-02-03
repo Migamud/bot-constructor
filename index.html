@@ -12,7 +12,7 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--tg-theme-bg-color, #ffffff);
@@ -21,43 +21,43 @@
             padding-bottom: 100px;
             overflow-x: hidden;
         }
-
+        
         .header {
             text-align: center;
             margin-bottom: 24px;
             animation: fadeIn 0.5s ease;
         }
-
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
+        
         .header h1 {
             font-size: 28px;
             margin-bottom: 8px;
             color: var(--tg-theme-text-color, #000);
         }
-
+        
         .header p {
             color: var(--tg-theme-hint-color, #999);
             font-size: 15px;
         }
-
+        
         .section-title {
             font-size: 18px;
             font-weight: 600;
             margin: 24px 0 16px 0;
             color: var(--tg-theme-text-color, #000);
         }
-
+        
         .bot-type-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 24px;
         }
-
+        
         .bot-type-card {
             padding: 20px 16px;
             border: 2px solid var(--tg-theme-hint-color, #e0e0e0);
@@ -67,48 +67,48 @@
             text-align: center;
             background: var(--tg-theme-bg-color, #fff);
         }
-
+        
         .bot-type-card:active {
             transform: scale(0.97);
         }
-
+        
         .bot-type-card.active {
             border-color: var(--tg-theme-button-color, #3390ec);
             background: var(--tg-theme-button-color, #3390ec);
             color: var(--tg-theme-button-text-color, #ffffff);
             box-shadow: 0 4px 12px rgba(51, 144, 236, 0.3);
         }
-
+        
         .bot-type-icon {
             font-size: 40px;
             margin-bottom: 8px;
         }
-
+        
         .bot-type-name {
             font-weight: 600;
             font-size: 15px;
             margin-bottom: 6px;
         }
-
+        
         .bot-type-price {
             font-size: 14px;
             opacity: 0.9;
         }
-
+        
         .features-section {
             display: none;
             animation: slideUp 0.4s ease;
         }
-
+        
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
+        
         .features-section.visible {
             display: block;
         }
-
+        
         .feature-item {
             display: flex;
             align-items: flex-start;
@@ -119,17 +119,17 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-
+        
         .feature-item:active {
             transform: scale(0.98);
             background: var(--tg-theme-secondary-bg-color, #e8e8e8);
         }
-
+        
         .feature-item.selected {
             background: rgba(51, 144, 236, 0.1);
             border: 1px solid var(--tg-theme-button-color, #3390ec);
         }
-
+        
         .feature-checkbox {
             width: 22px;
             height: 22px;
@@ -139,24 +139,24 @@
             cursor: pointer;
             accent-color: var(--tg-theme-button-color, #3390ec);
         }
-
+        
         .feature-info {
             flex: 1;
         }
-
+        
         .feature-name {
             font-weight: 600;
             font-size: 15px;
             margin-bottom: 4px;
             color: var(--tg-theme-text-color, #000);
         }
-
+        
         .feature-description {
             font-size: 13px;
             color: var(--tg-theme-hint-color, #999);
             line-height: 1.4;
         }
-
+        
         .feature-price {
             font-weight: 700;
             color: var(--tg-theme-button-color, #3390ec);
@@ -164,21 +164,21 @@
             white-space: nowrap;
             margin-left: 8px;
         }
-
+        
         .contact-form {
             display: none;
             margin-top: 24px;
             animation: slideUp 0.4s ease;
         }
-
+        
         .contact-form.visible {
             display: block;
         }
-
+        
         .form-group {
             margin-bottom: 16px;
         }
-
+        
         .form-group label {
             display: block;
             font-size: 14px;
@@ -186,7 +186,7 @@
             margin-bottom: 8px;
             color: var(--tg-theme-text-color, #000);
         }
-
+        
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -197,13 +197,13 @@
             background: var(--tg-theme-bg-color, #fff);
             color: var(--tg-theme-text-color, #000);
         }
-
+        
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: var(--tg-theme-button-color, #3390ec);
         }
-
+        
         .price-summary {
             position: fixed;
             bottom: 0;
@@ -215,25 +215,25 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 100;
         }
-
+        
         .price-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-
+        
         .price-label {
             font-size: 14px;
             color: var(--tg-theme-hint-color, #999);
         }
-
+        
         .price-value {
             font-size: 28px;
             font-weight: 700;
             color: var(--tg-theme-button-color, #3390ec);
         }
-
+        
         .order-button {
             width: 100%;
             background: var(--tg-theme-button-color, #3390ec);
@@ -246,22 +246,22 @@
             cursor: pointer;
             transition: opacity 0.2s;
         }
-
+        
         .order-button:active {
             opacity: 0.8;
         }
-
+        
         .order-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
+        
         .loading {
             text-align: center;
             padding: 40px;
             color: var(--tg-theme-hint-color, #999);
         }
-
+        
         .spinner {
             border: 3px solid var(--tg-theme-hint-color, #f3f3f3);
             border-top: 3px solid var(--tg-theme-button-color, #3390ec);
@@ -271,12 +271,12 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 16px;
         }
-
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
+        
         .hidden {
             display: none !important;
         }
@@ -432,9 +432,9 @@
                 updatePrice();
 
                 setTimeout(() => {
-                    document.getElementById('featuresSection').scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    document.getElementById('featuresSection').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
                     });
                 }, 100);
             });
@@ -459,7 +459,7 @@
                 `;
 
                 const checkbox = item.querySelector('.feature-checkbox');
-
+                
                 item.addEventListener('click', function(e) {
                     if (e.target !== checkbox) {
                         checkbox.checked = !checkbox.checked;
@@ -478,7 +478,7 @@
 
         function updateSelectedFeatures() {
             selectedFeatures = [];
-
+            
             document.querySelectorAll('.feature-checkbox:checked').forEach(cb => {
                 const id = cb.dataset.id;
                 const feature = features[selectedType].find(f => f.id === id);
@@ -528,7 +528,19 @@
                 comment: comment
             };
 
-            tg.sendData(JSON.stringify(orderData));
+            // Логируем для отладки
+            console.log('Отправка данных:', orderData);
+            
+            // Показываем что отправляем (для теста)
+            tg.showAlert('Отправляю данные: ' + JSON.stringify(orderData).substring(0, 50) + '...');
+            
+            try {
+                tg.sendData(JSON.stringify(orderData));
+                console.log('Данные отправлены успешно');
+            } catch (error) {
+                console.error('Ошибка отправки:', error);
+                tg.showAlert('Ошибка: ' + error.message);
+            }
         });
 
         tg.MainButton.setText('Заказать бота');
