@@ -504,54 +504,58 @@
         }
     }
 
-    function sendOrder() {
-        console.log('=== НАЧАЛО ОТПРАВКИ ЗАКАЗА ===');
-        
-        const name = document.getElementById('nameInput').value.trim();
-        const phone = document.getElementById('phoneInput').value.trim();
-        const comment = document.getElementById('commentInput').value.trim();
+ function sendOrder() {
+    console.log('=== НАЧАЛО ОТПРАВКИ ЗАКАЗА ===');
+    
+    const name = document.getElementById('nameInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    const comment = document.getElementById('commentInput').value.trim();
 
-        console.log('Введенные данные:', { name, phone, comment });
+    console.log('Введенные данные:', { name, phone, comment });
 
-        if (!selectedType) {
-            console.error('Тип бота не выбран!');
-            tg.showAlert('Выберите тип бота');
-            return;
-        }
-
-        if (!name || !phone) {
-            console.error('Не заполнены обязательные поля!');
-            tg.showAlert('Пожалуйста, заполните имя и телефон');
-            return;
-        }
-
-        if (tg.HapticFeedback) {
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-
-        const orderData = {
-            bot_type: botTypeNames[selectedType],
-            base_price: basePrice,
-            features: selectedFeatures,
-            total_price: basePrice + selectedFeatures.reduce((sum, f) => sum + f.price, 0),
-            name: name,
-            phone: phone,
-            comment: comment
-        };
-
-        console.log('Данные заказа для отправки:', orderData);
-        console.log('JSON строка:', JSON.stringify(orderData));
-
-        try {
-            console.log('Вызываю tg.sendData()...');
-            tg.sendData(JSON.stringify(orderData));
-            console.log('✅ sendData() выполнен успешно!');
-            console.log('Ожидаем закрытия WebApp...');
-        } catch (error) {
-            console.error('❌ Ошибка при вызове sendData():', error);
-            tg.showAlert('Ошибка отправки: ' + error.message);
-        }
+    if (!selectedType) {
+        console.error('Тип бота не выбран!');
+        tg.showAlert('Выберите тип бота');
+        return;
     }
+
+    if (!name || !phone) {
+        console.error('Не заполнены обязательные поля!');
+        tg.showAlert('Пожалуйста, заполните имя и телефон');
+        return;
+    }
+
+    if (tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred('success');
+    }
+
+    const orderData = {
+        bot_type: botTypeNames[selectedType],
+        base_price: basePrice,
+        features: selectedFeatures,
+        total_price: basePrice + selectedFeatures.reduce((sum, f) => sum + f.price, 0),
+        name: name,
+        phone: phone,
+        comment: comment
+    };
+
+    console.log('Данные заказа для отправки:', orderData);
+    console.log('JSON строка:', JSON.stringify(orderData));
+
+    try {
+        console.log('Вызываю tg.sendData()...');
+        tg.sendData(JSON.stringify(orderData));
+        console.log('✅ sendData() выполнен успешно!');
+        
+        // КРИТИЧЕСКИ ВАЖНО: Закрываем WebApp, чтобы данные дошли до бота
+        console.log('Закрываю WebApp...');
+        tg.close();
+        
+    } catch (error) {
+        console.error('❌ Ошибка при вызове sendData():', error);
+        tg.showAlert('Ошибка отправки: ' + error.message);
+    }
+}
 
     // Обработчик клика по MainButton
     console.log('Регистрирую обработчик MainButton.onClick');
@@ -568,6 +572,7 @@
 </script>
 </body>
 </html>
+
 
 
 
